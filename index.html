@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Respaldos S3</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte de Respaldos de Bases de Datos en Amazon S3</h1>
+        <p>Estado de respaldos por sucursal y día (últimos 6 días). </p>
+        <div id="loading" class="loading-spinner"></div>
+        <div id="report-container" class="hidden">
+            <div class="table-container">
+                <table id="backup-table">
+                    <thead>
+                        <tr>
+                            <th>Sucursal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+   <footer class="footer">
+    <p>&copy; 2025 Webia.mx. Todos los derechos reservados.</p>
+    <p>Desarrollado por <a href="https://perfil.webia.mx" target="_blank">webia.mx</a></p>
+</footer>
+    <script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/png';
+    link.href = 'http://localhost:3000/icono.png'; // O '/icono.png' si prefieres
+    document.head.appendChild(link);
+});
+
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loadingSpinner = document.getElementById('loading');
+            const reportContainer = document.getElementById('report-container');
+            const tableHead = document.querySelector('#backup-table thead tr');
+            const tableBody = document.querySelector('#backup-table tbody');
+            try {
+                const response = await fetch('/api');
+                if (!response.ok) {
+                    throw new Error(`Error en la API: ${response.statusText}`);
+                }
+                const { allBranches, dailyReport, formattedDates } = await response.json();
+                // Crear los encabezados de la tabla (días)
+                formattedDates.forEach(date => {
+                    const th = document.createElement('th');
+                    th.textContent = date;
+                    tableHead.appendChild(th);
+                });
+                // Crear las filas de la tabla (sucursales)
+                allBranches.forEach(branch => {
+                    const tr = document.createElement('tr');
+                    const th = document.createElement('th');
+                    th.textContent = branch;
+                    tr.appendChild(th);
+                    // Llenar las celdas con el estado de respaldo para cada día
+                    formattedDates.forEach(date => {
+                        const td = document.createElement('td');
+                        td.textContent = dailyReport[date][branch];
+                        // Añadir clases para colorear las celdas
+                        if (dailyReport[date][branch] === '✅') {
+                            td.classList.add('backed-up');
+                        } else {
+                            td.classList.add('missing');
+                        }
+                        tr.appendChild(td);
+                    });
+                    tableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("No se pudo obtener el reporte:", error);
+                reportContainer.innerHTML = `<p class="error-message">Hubo un error al cargar el reporte. Por favor, inténtelo de nuevo más tarde.</p>`;
+            } finally {
+                loadingSpinner.classList.add('hidden');
+                reportContainer.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
