@@ -52,7 +52,7 @@ export default async (req, res) => {
 
   try {
     const today = new Date();
-    const lastFiveDays = subDays(today, 5);
+    const lastFiveDays = subDays(today, 4);
     const dateRange = eachDayOfInterval({ start: lastFiveDays, end: today });
     const formattedDates = dateRange.map(date => format(date, 'yyyy-MM-dd'));
 
