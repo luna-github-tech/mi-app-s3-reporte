@@ -39,6 +39,7 @@ export default async (req, res) => {
       "BanderillaSucBanderilla1",
       "XalapaSucTostador",
       "PueblaSucSanAngel",
+      "PueblaSuc3SurSoft",
       "XalapaSucAtenas",
       "XalapaSucMiguelAleman",
       "XalapaSucPlazaAmericas",
