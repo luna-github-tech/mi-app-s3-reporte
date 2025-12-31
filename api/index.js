@@ -28,6 +28,7 @@ export default async (req, res) => {
       "VeracruzSucWalmart",
       "VeracruzSucTejeria",
       "VeracruzSucAlmacen",
+      "VeracruzSuc2Bahias",
       "XalapaSucEnriquez",
       "XalapaSucHakim",
       "XalapaSucMurilloVidal",
